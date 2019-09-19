@@ -13,6 +13,7 @@ class Client {
   constructor(options) {
     assert.object(options, 'options');
     assert.optionalNumber(options.timeout, 'timeout');
+    assert.optionalNumber(options.idleTimeout, 'idleTimeout');
 
     const url = options.url ? parseUrl(options.url) : null;
     delete url.search;
@@ -148,6 +149,11 @@ class Client {
       } else {
         this._socket = net.connect(this.port, this.host);
         this._socket.once('connect', resolve);
+      }
+
+      if (this.idleTimeout) {
+        this._socket.setTimeout(this.idleTimeout);
+        this._socket.on('timeout', destroy);
       }
 
       this._socket.on('close', destroy);
