@@ -27,7 +27,7 @@ class Attribute {
 
   get vals() {
     const eType = _bufferEncoding(this.type);
-    return this._vals.map(v => v.toString(eType));
+    return this._vals.map(v => Buffer.compare(Buffer.from(v.toString(eType), eType), v) === 0 ? v.toString(eType) : v);
   }
 
   set vals(vals) {
